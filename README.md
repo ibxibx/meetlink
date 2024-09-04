@@ -1,5 +1,9 @@
 # MeetLink
 
+## Live Demo Link:
+
+https://ibxibx.github.io/meetlink/
+
 ## Description
 MeetLink is a serverless, progressive web application (PWA) built with React using a test-driven development (TDD) approach. The app uses the Google Calendar API to fetch upcoming events for a specific city, allowing users to view and interact with event details.
 
