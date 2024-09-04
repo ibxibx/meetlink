@@ -74,7 +74,7 @@ Scenario 1: When user hasn't specified a number, 30 is the default number
 
 Given the user hasn't specified the number of events to display
 When the user views the events list
-Then 3ß events should be displayed by default
+Then 30 events should be displayed by default
 
 Scenario 2: User can change the number of events they want to see
 
