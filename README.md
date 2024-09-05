@@ -23,6 +23,25 @@ MeetLink is a serverless, progressive web application (PWA) built with React usi
 - Jest (for testing)
 - Recharts (for data visualization)
 
+## Architecture
+
+![MeetLink Architecture Diagram](https://github.com/ibxibx/meetlink/blob/main/img/Archi_Diagram_MeetLink_App.jpg)
+
+This diagram illustrates the serverless architecture of the MeetLink app:
+
+1. **User's Device**: Where users interact with the MeetLink React App (PWA).
+2. **MeetLink React App**: The frontend of our application, including:
+   - Service Worker: Enables offline functionality and faster loading.
+   - Local Storage: For caching data and enabling offline use.
+3. **Amazon API Gateway**: Acts as the entry point for API calls from the app to Lambda functions.
+4. **AWS Lambda Functions**: Serverless functions handling various operations:
+   - Authentication Function: Manages user authentication.
+   - Event Retrieval Function: Fetches events from Google Calendar API.
+   - Data Processing Function: Processes and filters event data.
+5. **Google Calendar API**: The external service our app interacts with to get event data.
+
+This serverless architecture allows for scalable, cost-effective operation with reduced management overhead, aligning perfectly with the PWA approach for optimal user experience.
+
 ## User Stories and Scenarios
 
 ### Feature 1: Filter Events by City
