@@ -1,0 +1,71 @@
+{
+  "C:\\Users\\IAN\\desktop\\meetlink\\auth-server": {
+    "versionSfCore": null,
+    "versionFramework": "4.2.5",
+    "isWithinCompose": false,
+    "isCompose": false,
+    "composeOrgName": null,
+    "composeResolverProviders": {
+      "default-aws-credential-resolver": "<REDACTED>"
+    },
+    "composeServiceName": null,
+    "servicePath": "C:\\Users\\IAN\\desktop\\meetlink\\auth-server",
+    "serviceConfigFileName": "serverless.yaml",
+    "service": {
+      "service": "auth-server",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs14.x",
+        "stage": "dev",
+        "region": "us-east-1",
+        "versionFunctions": true
+      },
+      "functions": {
+        "hello": {
+          "handler": "handler.hello"
+        }
+      }
+    },
+    "serviceRawFile": "service: auth-server\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: nodejs14.x\r\n\r\nfunctions:\r\n  hello:\r\n    handler: handler.hello",
+    "command": [
+      "config",
+      "credentials"
+    ],
+    "options": {
+      "provider": "aws",
+      "key": "AKIA3AOCJZ7PSQ3RADB5",
+      "secret": "<REDACTED>"
+    },
+    "error": {
+      "message": "The \"config credentials\" command was deprecated in v4. To configure your AWS credentials, run the \"serverless\" command instead.",
+      "code": "UNRECOGNIZED_CLI_COMMAND"
+    },
+    "params": {},
+    "machineId": "4894b6dee82dcb16f08df8d08d913c6e",
+    "accessKeyV2": "<REDACTED>",
+    "accessKeyV1": "<REDACTED>",
+    "orgId": "5ab9930d-4956-47a8-bb16-059c776731d2",
+    "orgName": "careerfoundry1",
+    "userId": "qT13HPqxDnk5CGHKK4",
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": true,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "userName": "careerfoundry1",
+    "subscription": null,
+    "userEmail": "ian@avotravel.com",
+    "projectType": "framework",
+    "versionSf": "4.2.5",
+    "serviceProviderAwsCfStackName": "auth-server-dev",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}
