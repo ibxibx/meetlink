@@ -1,23 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const CitySearch = ({ allLocations }) => {
+const CitySearch = ({ allLocations, setCurrentCity }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-const handleInputChanged = (event) => {
+  useEffect(() => {
+    if (allLocations) {
+      setSuggestions(allLocations);
+    }
+  }, [allLocations]);
+
+  const handleInputChanged = (event) => {
     const value = event.target.value;
-    const filteredLocations = allLocations.filter((location) =>
-      location.toUpperCase().includes(value.toUpperCase())
-    );
+    const filteredLocations = allLocations 
+      ? allLocations.filter((location) =>
+          location.toUpperCase().includes(value.toUpperCase())
+        )
+      : [];
     setQuery(value);
     setSuggestions(filteredLocations);
+    setShowSuggestions(true);
   };
 
   const handleItemClicked = (event) => {
     const value = event.target.textContent;
     setQuery(value);
     setShowSuggestions(false);
+    setCurrentCity(value);
   };
 
   return (
@@ -30,8 +40,8 @@ const handleInputChanged = (event) => {
         onChange={handleInputChanged}
         onFocus={() => setShowSuggestions(true)}
       />
-      {showSuggestions && (
-        <ul className="suggestions">
+      {showSuggestions && suggestions.length > 0 && (
+        <ul className="suggestions" aria-label="suggestions">
           {suggestions.map((suggestion) => (
             <li key={suggestion} onClick={handleItemClicked}>
               {suggestion}

@@ -1,6 +1,7 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, within, screen, waitFor } from "@testing-library/react";
 import EventList from "../components/EventList";
+import App from "../App";
 import { getEvents } from '../api';
 
 describe("<EventList /> component", () => {
@@ -15,5 +16,16 @@ describe("<EventList /> component", () => {
     const { getAllByRole } = render(<EventList events={allEvents} />);
     const listItems = getAllByRole("listitem");
     expect(listItems).toHaveLength(allEvents.length);
+  });
+});
+
+describe('<EventList /> integration', () => {
+  test('renders a list of events when the app is mounted and rendered', async () => {
+    render(<App />);
+    await waitFor(() => {
+      const eventList = screen.getByTestId("event-list");
+      const eventItems = within(eventList).queryAllByRole('listitem');
+      expect(eventItems.length).toBeGreaterThan(0);
+    });
   });
 });
