@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/meetlink/static/css/main.ffd21025.css",
-    "main.js": "/meetlink/static/js/main.fea9bcd0.js",
+    "main.js": "/meetlink/static/js/main.36e08745.js",
     "static/js/685.85506deb.chunk.js": "/meetlink/static/js/685.85506deb.chunk.js",
     "service-worker.js": "/meetlink/service-worker.js",
     "index.html": "/meetlink/index.html"
   },
   "entrypoints": [
     "static/css/main.ffd21025.css",
-    "static/js/main.fea9bcd0.js"
+    "static/js/main.36e08745.js"
   ]
 }
