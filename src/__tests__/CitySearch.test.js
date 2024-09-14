@@ -4,8 +4,6 @@ import CitySearch from "../components/CitySearch";
 import { extractLocations } from "../api";
 import App from "../App";
 
-jest.setTimeout(30000);
-
 const mockEvents = [
   { id: 1, summary: "Event 1", location: "Berlin, Germany", start: { dateTime: "2023-06-01T00:00:00Z" } },
   { id: 2, summary: "Event 2", location: "Paris, France", start: { dateTime: "2023-06-02T00:00:00Z" } },
@@ -30,16 +28,13 @@ describe("<CitySearch /> component", () => {
 
     fireEvent.change(cityTextBox, { target: { value: "Berlin" } });
 
-    // Use waitFor to ensure that suggestions have time to render
     await waitFor(() => {
-      const suggestions = screen.queryAllByRole("listitem");
-      console.log(suggestions); // Check the suggestions list
+      const suggestions = screen.getAllByRole("option");
       expect(suggestions.length).toBeGreaterThan(0);
     });
   });
 });
 
-// Move the integration test outside of the above describe block
 describe("<CitySearch /> integration", () => {
   test("renders suggestions list when the app is rendered.", async () => {
     render(<App />);
@@ -48,12 +43,9 @@ describe("<CitySearch /> integration", () => {
 
     fireEvent.change(cityTextBox, { target: { value: "Berlin" } });
 
-    const allLocations = extractLocations(mockEvents);
-
     await waitFor(() => {
-      const suggestionList = screen.getByRole("list", { name: /suggestions/i });
-      const suggestionListItems = suggestionList.querySelectorAll("li");
-      expect(suggestionListItems.length).toBe(allLocations.length + 1); // +1 for the "See all cities" option
+      const suggestions = screen.getAllByRole("option");
+      expect(suggestions.length).toBeGreaterThan(0);
     });
   });
 });

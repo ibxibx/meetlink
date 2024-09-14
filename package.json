@@ -12,6 +12,7 @@
         "start": "cross-env NODE_ENV=development react-scripts start",
         "build": "cross-env NODE_ENV=production DISABLE_ESLINT_PLUGIN=true react-scripts build",
         "test": "cross-env NODE_ENV=test react-scripts test",
+        "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
         "eject": "react-scripts eject",
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build"
@@ -29,11 +30,18 @@
         ]
     },
     "devDependencies": {
+        "@babel/core": "^7.25.2",
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "@babel/runtime": "^7.25.6",
+        "@testing-library/jest-dom": "^6.5.0",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^14.5.2",
+        "babel-jest": "^29.7.0",
         "cross-env": "^7.0.3",
         "eslint": "^8.0.0",
         "eslint-plugin-react": "^7.32.2",
-        "gh-pages": "^6.1.1"
+        "gh-pages": "^6.1.1",
+        "jest-environment-jsdom": "^29.7.0"
     },
     "homepage": "https://ibxibx.github.io/meetlink"
 }

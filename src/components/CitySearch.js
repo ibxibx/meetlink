@@ -40,14 +40,14 @@ const CitySearch = ({ allLocations, setCurrentCity }) => {
         onChange={handleInputChanged}
         onFocus={() => setShowSuggestions(true)}
       />
-      {showSuggestions && suggestions.length > 0 && (
-        <ul className="suggestions" aria-label="suggestions">
+      {showSuggestions && (
+        <ul className="suggestions" role="list" aria-label="suggestions">
           {suggestions.map((suggestion) => (
-            <li key={suggestion} onClick={handleItemClicked}>
+            <li key={suggestion} onClick={handleItemClicked} role="option">
               {suggestion}
             </li>
           ))}
-          <li key="see-all-cities" onClick={handleItemClicked}>
+          <li key="see-all-cities" onClick={handleItemClicked} role="option">
             <b>See all cities</b>
           </li>
         </ul>
