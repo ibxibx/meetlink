@@ -12,6 +12,7 @@
         "start": "cross-env NODE_ENV=development react-scripts start",
         "build": "cross-env NODE_ENV=production DISABLE_ESLINT_PLUGIN=true react-scripts build",
         "test": "cross-env NODE_ENV=test react-scripts test",
+        "test:coverage": "react-scripts test --coverage --watchAll=false", 
         "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
         "eject": "react-scripts eject",
         "predeploy": "npm run build",
