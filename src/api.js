@@ -1,6 +1,7 @@
-import mockData from './mock-data';
+import mockData from "./mock-data";
 
-const API_BASE_URL = 'https://ok2j7dg7a0.execute-api.eu-central-1.amazonaws.com/dev/api';
+const API_BASE_URL =
+  "https://ok2j7dg7a0.execute-api.eu-central-1.amazonaws.com/dev/api";
 
 export const extractLocations = (events) => {
   if (!events) return [];
@@ -15,18 +16,18 @@ const checkToken = async (accessToken) => {
       `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
     );
     if (!response.ok) {
-      throw new Error('Token validation failed');
+      throw new Error("Token validation failed");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error checking token:', error);
-    return { error: 'Token validation failed' };
+    console.error("Error checking token:", error);
+    return { error: "Token validation failed" };
   }
 };
 
 export const getAccessToken = async () => {
-  const accessToken = localStorage.getItem('access_token');
-  
+  const accessToken = localStorage.getItem("access_token");
+
   try {
     const tokenCheck = accessToken && (await checkToken(accessToken));
 
@@ -37,7 +38,7 @@ export const getAccessToken = async () => {
       if (!code) {
         const response = await fetch(`${API_BASE_URL}/get-auth-url`);
         if (!response.ok) {
-          throw new Error('Failed to get auth URL');
+          throw new Error("Failed to get auth URL");
         }
         const { authUrl } = await response.json();
         window.location.href = authUrl;
@@ -47,7 +48,7 @@ export const getAccessToken = async () => {
     }
     return accessToken;
   } catch (error) {
-    console.error('Error in getAccessToken:', error);
+    console.error("Error in getAccessToken:", error);
     return null;
   }
 };
@@ -56,28 +57,30 @@ const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
   try {
     const response = await fetch(`${API_BASE_URL}/token/${encodeCode}`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
     if (!response.ok) {
-      throw new Error(`Failed to get token: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to get token: ${response.status} ${response.statusText}`
+      );
     }
     const result = await response.json();
     if (result.access_token) {
       localStorage.setItem("access_token", result.access_token);
       return result.access_token;
     }
-    throw new Error('No access token received');
+    throw new Error("No access token received");
   } catch (error) {
-    console.error('Error getting token:', error);
+    console.error("Error getting token:", error);
     return null;
   }
 };
 
 export const getEvents = async () => {
-  if (window.location.href.startsWith('http://localhost')) {
+  if (window.location.href.startsWith("http://localhost")) {
     return mockData;
   }
 
@@ -88,13 +91,13 @@ export const getEvents = async () => {
       const url = `${API_BASE_URL}/get-events/${token}`;
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error('Failed to fetch events');
+        throw new Error("Failed to fetch events");
       }
       const result = await response.json();
       if (result && result.events) {
         return result.events;
       }
-      throw new Error('No events data in response');
+      throw new Error("No events data in response");
     }
   } catch (error) {
     console.error("Error fetching events:", error);

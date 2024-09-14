@@ -5,9 +5,24 @@ import { extractLocations } from "../api";
 import App from "../App";
 
 const mockEvents = [
-  { id: 1, summary: "Event 1", location: "Berlin, Germany", start: { dateTime: "2023-06-01T00:00:00Z" } },
-  { id: 2, summary: "Event 2", location: "Paris, France", start: { dateTime: "2023-06-02T00:00:00Z" } },
-  { id: 3, summary: "Event 3", location: "New York, USA", start: { dateTime: "2023-06-03T00:00:00Z" } },
+  {
+    id: 1,
+    summary: "Event 1",
+    location: "Berlin, Germany",
+    start: { dateTime: "2023-06-01T00:00:00Z" },
+  },
+  {
+    id: 2,
+    summary: "Event 2",
+    location: "Paris, France",
+    start: { dateTime: "2023-06-02T00:00:00Z" },
+  },
+  {
+    id: 3,
+    summary: "Event 3",
+    location: "New York, USA",
+    start: { dateTime: "2023-06-03T00:00:00Z" },
+  },
 ];
 
 jest.mock("../api", () => ({

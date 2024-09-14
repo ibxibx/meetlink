@@ -1,5 +1,11 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { getEvents, extractLocations } from "../api";
 import App from "../App";
 import { act } from "react-dom/test-utils";
@@ -7,7 +13,7 @@ import { act } from "react-dom/test-utils";
 jest.setTimeout(50000);
 
 // Mock the API
-jest.mock('../api');
+jest.mock("../api");
 
 const mockEvents = [
   {
@@ -82,12 +88,13 @@ describe("<App /> integration", () => {
 
     // Wait for suggestions to appear
     await waitFor(() => {
-      const suggestionList = screen.getByRole('list', { name: /suggestions/i });
+      const suggestionList = screen.getByRole("list", { name: /suggestions/i });
       expect(suggestionList).toBeInTheDocument();
     });
 
-    const suggestionList = screen.getByRole('list', { name: /suggestions/i });
-    const berlinSuggestion = within(suggestionList).getByText("Berlin, Germany");
+    const suggestionList = screen.getByRole("list", { name: /suggestions/i });
+    const berlinSuggestion =
+      within(suggestionList).getByText("Berlin, Germany");
     expect(berlinSuggestion).toBeInTheDocument();
 
     fireEvent.click(berlinSuggestion);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const NumberOfEvents = ({ setCurrentNOE }) => {
   const [number, setNumber] = useState(32);

@@ -2,26 +2,26 @@
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
-import { configure } from '@testing-library/react';
-import { act } from 'react';
+import "@testing-library/jest-dom";
+import { configure } from "@testing-library/react";
+import { act } from "react";
 
 configure({ defaultHidden: true });
 
 // Mock getSelection
-Object.defineProperty(window, 'getSelection', {
+Object.defineProperty(window, "getSelection", {
   value: jest.fn(() => ({
     addRange: jest.fn(),
     removeAllRanges: jest.fn(),
     getRangeAt: jest.fn(),
-    toString: jest.fn(() => ''),
+    toString: jest.fn(() => ""),
     collapse: jest.fn(), // Add collapse to mock selection behavior correctly
   })),
   writable: true,
 });
 
 // Mock createRange
-Object.defineProperty(document, 'createRange', {
+Object.defineProperty(document, "createRange", {
   value: jest.fn(() => ({
     setStart: jest.fn(),
     setEnd: jest.fn(),
@@ -33,7 +33,7 @@ Object.defineProperty(document, 'createRange', {
 });
 
 // Mock the ownerDocument
-Object.defineProperty(global.Element.prototype, 'ownerDocument', {
+Object.defineProperty(global.Element.prototype, "ownerDocument", {
   get() {
     return document;
   },
@@ -52,12 +52,12 @@ const MESSAGES_TO_IGNORE = [
   "Error:",
   "The above error occurred",
   "Warning: `ReactDOMTestUtils.act` is deprecated",
-  "Warning: The current testing environment is not configured to support act(...)"
+  "Warning: The current testing environment is not configured to support act(...)",
 ];
 
 const originalError = console.error;
 console.error = (...args) => {
-  if (!MESSAGES_TO_IGNORE.some(msg => args.join(' ').includes(msg))) {
+  if (!MESSAGES_TO_IGNORE.some((msg) => args.join(" ").includes(msg))) {
     originalError(...args);
   }
 };
