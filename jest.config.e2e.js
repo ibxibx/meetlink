@@ -6,4 +6,8 @@ module.exports = {
   transformIgnorePatterns: [
     '/node_modules/(?!puppeteer)/',
   ],
+  testMatch: [
+    "<rootDir>/src/e2e/**/*.{js,jsx,ts,tsx}"
+  ],
+  moduleDirectories: ["node_modules", "src"]
 };
