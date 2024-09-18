@@ -48,6 +48,93 @@ describe("<CitySearch /> component", () => {
       expect(suggestions.length).toBeGreaterThan(0);
     });
   });
+
+  test("clicking on a suggestion should update the query and hide suggestions", () => {
+    const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
+    const setCurrentCity = jest.fn();
+
+    render(
+      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+    );
+
+    const input = screen.getByPlaceholderText("Search for a city");
+    fireEvent.change(input, { target: { value: "Berlin" } });
+
+    const berlinSuggestion = screen.getByText("Berlin, Germany");
+    fireEvent.click(berlinSuggestion);
+
+    expect(input.value).toBe("Berlin, Germany");
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+    expect(setCurrentCity).toHaveBeenCalledWith("Berlin, Germany");
+  });
+
+  test("clicking 'See all cities' should update the query and hide suggestions", () => {
+    const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
+    const setCurrentCity = jest.fn();
+
+    render(
+      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+    );
+
+    const input = screen.getByPlaceholderText("Search for a city");
+    fireEvent.change(input, { target: { value: "Berlin" } });
+
+    const seeAllCities = screen.getByText("See all cities");
+    fireEvent.click(seeAllCities);
+
+    expect(input.value).toBe("See all cities");
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+    expect(setCurrentCity).toHaveBeenCalledWith("See all cities");
+  });
+
+  test("selects 'See all cities' when it is clicked", () => {
+    const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
+    const setCurrentCity = jest.fn();
+    render(
+      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+    );
+
+    const input = screen.getByPlaceholderText("Search for a city");
+    fireEvent.change(input, { target: { value: "Berlin" } });
+
+    const seeAllCitiesItem = screen.getByText("See all cities");
+    fireEvent.click(seeAllCitiesItem);
+
+    expect(setCurrentCity).toHaveBeenCalledWith("See all cities");
+    expect(input.value).toBe("See all cities");
+  });
+
+  test("selects a city from the suggestions", () => {
+    const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
+    const setCurrentCity = jest.fn();
+    render(
+      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+    );
+
+    const input = screen.getByPlaceholderText("Search for a city");
+    fireEvent.change(input, { target: { value: "Berlin" } });
+
+    const berlinSuggestion = screen.getByText("Berlin, Germany");
+    fireEvent.click(berlinSuggestion);
+
+    expect(setCurrentCity).toHaveBeenCalledWith("Berlin, Germany");
+    expect(input.value).toBe("Berlin, Germany");
+  });
+
+  test("shows suggestions when the input is focused", () => {
+    const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
+    const setCurrentCity = jest.fn();
+    render(
+      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+    );
+
+    const input = screen.getByPlaceholderText("Search for a city");
+    fireEvent.focus(input);
+
+    const suggestionList = screen.getByRole("list", { name: "suggestions" });
+    expect(suggestionList).toBeInTheDocument();
+    expect(screen.getAllByRole("option")).toHaveLength(allLocations.length + 1); // +1 for "See all cities"
+  });
 });
 
 describe("<CitySearch /> integration", () => {

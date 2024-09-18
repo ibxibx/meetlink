@@ -4,9 +4,9 @@ const NumberOfEvents = ({ setCurrentNOE }) => {
   const [number, setNumber] = useState(32);
 
   const handleInputChanged = (event) => {
-    const value = parseInt(event.target.value);
+    const value = event.target.value;
     setNumber(value);
-    setCurrentNOE(value);
+    setCurrentNOE(parseInt(value) || 32); // Use 32 as default if parsing fails
   };
 
   return (
@@ -17,6 +17,7 @@ const NumberOfEvents = ({ setCurrentNOE }) => {
         id="number-of-events"
         value={number}
         onChange={handleInputChanged}
+        min="1"
       />
     </div>
   );

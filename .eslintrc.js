@@ -1,7 +1,16 @@
 ﻿module.exports = {
   extends: ['react-app', 'react-app/jest'],
-  plugins: ['react'],
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      presets: [
+        ['babel-preset-react-app', false],
+        'babel-preset-react-app/prod'
+      ]
+    }
+  },
   rules: {
-    // You can add your custom rules here
+    // You can add custom rules here
   }
 };

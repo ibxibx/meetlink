@@ -1,8 +1,12 @@
 module.exports = {
-  setupFilesAfterEnv: ["<rootDir>/src/setupTests.js"],
-  testEnvironment: "jsdom",
   transform: {
-    "^.+\\.(js|jsx)$": "babel-jest",
+    "^.+\\.(js|jsx)$": "babel-jest"
   },
-  transformIgnorePatterns: ["/node_modules/(?!(@babel/runtime)/)"],
+  transformIgnorePatterns: [
+    "/node_modules/(?!jest-cucumber)"
+  ],
+  setupFilesAfterEnv: [
+    "<rootDir>/jest.setup.js"
+  ],
+  testEnvironment: "jsdom"
 };

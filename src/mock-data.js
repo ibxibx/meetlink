@@ -1437,3 +1437,7 @@ const mockData = [
 ];
 
 export default mockData;
+
+export const getEvents = () => {
+  return Promise.resolve(mockData);
+};
