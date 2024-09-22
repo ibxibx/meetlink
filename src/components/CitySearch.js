@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-const CitySearch = ({ allLocations, setCurrentCity }) => {
+const CitySearch = ({ allLocations, setCurrentCity, setInfoAlert }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
     if (allLocations) {
@@ -21,6 +22,16 @@ const CitySearch = ({ allLocations, setCurrentCity }) => {
     setQuery(value);
     setSuggestions(filteredLocations);
     setShowSuggestions(true);
+    setSelectedIndex(-1);
+
+    let infoText;
+    if (filteredLocations.length === 0) {
+      infoText =
+        "We can not find the city you are looking for. Please try another city";
+    } else {
+      infoText = "";
+    }
+    setInfoAlert(infoText);
   };
 
   const handleItemClicked = (event) => {
@@ -28,6 +39,8 @@ const CitySearch = ({ allLocations, setCurrentCity }) => {
     setQuery(value);
     setShowSuggestions(false);
     setCurrentCity(value);
+    setSelectedIndex(-1);
+    setInfoAlert("");
   };
 
   return (
@@ -41,13 +54,13 @@ const CitySearch = ({ allLocations, setCurrentCity }) => {
         onFocus={() => setShowSuggestions(true)}
       />
       {showSuggestions && (
-        <ul className="suggestions" role="list" aria-label="suggestions">
+        <ul className="suggestions" aria-label="suggestions">
           {suggestions.map((suggestion) => (
-            <li key={suggestion} onClick={handleItemClicked} role="option">
+            <li key={suggestion} onClick={handleItemClicked}>
               {suggestion}
             </li>
           ))}
-          <li key="see-all-cities" onClick={handleItemClicked} role="option">
+          <li key="see-all-cities" onClick={handleItemClicked}>
             <b>See all cities</b>
           </li>
         </ul>

@@ -9,7 +9,6 @@ import {
 import App from "../App";
 import { getEvents } from "../mock-data";
 import userEvent from "@testing-library/user-event";
-import { act } from "react-dom/test-utils";
 
 const feature = loadFeature("./src/features/filterEventsByCity.feature");
 
@@ -56,96 +55,86 @@ defineFeature(feature, (test) => {
             name: "suggestions",
           });
           expect(suggestionList).toBeInTheDocument();
-          const suggestionItems = within(suggestionList).getAllByRole("option");
-          expect(suggestionItems.length).toBeGreaterThan(0);
+        });
+
+        const suggestionItems = screen.getAllByRole("listitem");
+        expect(suggestionItems.length).toBeGreaterThan(0);
+      }
+    );
+  });
+
+  test("User can select a city from the suggested list.", ({
+    given,
+    and,
+    when,
+    then,
+  }) => {
+    let citySearchInput;
+
+    given("user was typing Berlin in the city textbox", async () => {
+      render(<App />);
+      const user = userEvent.setup();
+      citySearchInput = screen.getByPlaceholderText("Search for a city");
+      await user.type(citySearchInput, "Berlin");
+    });
+
+    and("the list of suggested cities is showing", async () => {
+      await waitFor(() => {
+        const suggestionList = screen.getByRole("list", {
+          name: "suggestions",
+        });
+        expect(suggestionList).toBeInTheDocument();
+      });
+
+      const suggestions = screen.getAllByRole("listitem");
+      expect(suggestions.length).toBeGreaterThan(0);
+    });
+
+    when(
+      "the user selects a city (e.g., Berlin, Germany) from the list",
+      async () => {
+        const suggestionList = screen.getByRole("list", {
+          name: "suggestions",
+        });
+        const suggestions = within(suggestionList).getAllByRole("listitem");
+
+        const berlinSuggestion = suggestions.find((suggestion) =>
+          suggestion.textContent.toLowerCase().includes("berlin")
+        );
+
+        if (berlinSuggestion) {
+          fireEvent.click(berlinSuggestion);
+        } else {
+          throw new Error("Berlin suggestion not found");
+        }
+      }
+    );
+
+    then(
+      "their city should be changed to that city (i.e., Berlin, Germany)",
+      async () => {
+        await waitFor(() => {
+          expect(citySearchInput.value.toLowerCase()).toContain("berlin");
         });
       }
     );
 
-    test("User can select a city from the suggested list.", ({
-      given,
-      and,
-      when,
-      then,
-    }) => {
-      let AppComponent;
-      let citySearchInput;
+    and(
+      "the user should receive a list of upcoming events in that city",
+      async () => {
+        const allEvents = await getEvents();
+        const berlinEvents = allEvents.filter((event) =>
+          event.location.toLowerCase().includes("berlin")
+        );
 
-      given("user was typing Berlin in the city textbox", async () => {
-        AppComponent = render(<App />);
-        const user = userEvent.setup();
-        citySearchInput = screen.getByPlaceholderText("Search for a city");
-        await user.type(citySearchInput, "Berlin");
-      });
-
-      and("the list of suggested cities is showing", async () => {
         await waitFor(() => {
-          const suggestionList = screen.getByRole("list", {
-            name: "suggestions",
-          });
-          expect(suggestionList).toBeInTheDocument();
-          const suggestions = within(suggestionList).getAllByRole("option");
-          expect(suggestions.length).toBeGreaterThan(0);
+          const eventListItems = screen.getAllByRole("listitem");
+          expect(eventListItems.length).toBeGreaterThan(0);
         });
-      });
 
-      when(
-        "the user selects a city (e.g., Berlin, Germany) from the list",
-        async () => {
-          const suggestionList = screen.getByRole("list", {
-            name: "suggestions",
-          });
-          console.log("Suggestion list content:", suggestionList.innerHTML);
-
-          const suggestions = within(suggestionList).getAllByRole("option");
-          console.log("Number of suggestions:", suggestions.length);
-          suggestions.forEach((suggestion, index) => {
-            console.log(`Suggestion ${index + 1}:`, suggestion.textContent);
-          });
-
-          const berlinSuggestion = suggestions.find((suggestion) =>
-            suggestion.textContent.toLowerCase().includes("berlin")
-          );
-
-          if (berlinSuggestion) {
-            await act(async () => {
-              await new Promise((resolve) => setTimeout(resolve, 0));
-              fireEvent.click(berlinSuggestion);
-            });
-          } else {
-            throw new Error("Berlin suggestion not found");
-          }
-        }
-      );
-
-      then(
-        "their city should be changed to that city (i.e., Berlin, Germany)",
-        async () => {
-          await waitFor(() => {
-            expect(citySearchInput.value.toLowerCase()).toContain("berlin");
-          });
-        }
-      );
-
-      and(
-        "the user should receive a list of upcoming events in that city",
-        async () => {
-          const allEvents = await getEvents();
-          const berlinEvents = allEvents.filter((event) =>
-            event.location.toLowerCase().includes("berlin")
-          );
-          await waitFor(
-            () => {
-              const eventListItems = screen.getAllByRole("listitem");
-              expect(eventListItems.length).toBeGreaterThan(0);
-              expect(eventListItems.length).toBeLessThanOrEqual(
-                berlinEvents.length
-              );
-            },
-            { timeout: 3000 }
-          );
-        }
-      );
-    });
+        const eventListItems = screen.getAllByRole("listitem");
+        expect(eventListItems.length).toBeLessThanOrEqual(berlinEvents.length);
+      }
+    );
   });
 });

@@ -3,13 +3,21 @@ import CitySearch from "./components/CitySearch";
 import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
 import { getEvents, extractLocations } from "./api";
+import { InfoAlert, ErrorAlert } from "./components/Alert";
 import "./App.css";
+import * as atatus from "atatus-spa";
 
 const App = () => {
   const [events, setEvents] = useState([]);
   const [currentNOE, setCurrentNOE] = useState(32);
   const [allLocations, setAllLocations] = useState([]);
   const [currentCity, setCurrentCity] = useState("See all cities");
+  const [infoAlert, setInfoAlert] = useState("");
+  const [errorAlert, setErrorAlert] = useState("");
+
+  useEffect(() => {
+    atatus.notify(new Error("Test Atatus on Production"));
+  }, []);
 
   const fetchData = useCallback(async () => {
     const allEvents = await getEvents();
@@ -27,17 +35,37 @@ const App = () => {
     fetchData();
   }, [fetchData]);
 
+  const handleNumberOfEventsChange = (value) => {
+    if (isNaN(value) || value <= 0) {
+      setErrorAlert("Please enter a number greater than 0.");
+    } else {
+      setErrorAlert("");
+      setCurrentNOE(Number(value));
+    }
+  };
+
   return (
     <div className="App">
       <nav className="nav-bar">
         <img
-          src={`${process.env.PUBLIC_URL}/img/meetlink_logo.png`}
+          src="/img/meetlink_logo.png"
           alt="MeetLink Logo"
           className="nav-logo"
         />
       </nav>
-      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
-      <NumberOfEvents setCurrentNOE={setCurrentNOE} />
+      <div className="alerts-container">
+        {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
+        {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
+      </div>
+      <CitySearch
+        allLocations={allLocations}
+        setCurrentCity={setCurrentCity}
+        setInfoAlert={setInfoAlert}
+      />
+      <NumberOfEvents
+        setCurrentNOE={handleNumberOfEventsChange}
+        currentNOE={currentNOE}
+      />
       <EventList events={events} />
     </div>
   );

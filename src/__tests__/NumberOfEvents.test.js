@@ -8,7 +8,7 @@ describe("<NumberOfEvents /> component", () => {
 
   beforeEach(() => {
     NumberOfEventsComponent = render(
-      <NumberOfEvents setCurrentNOE={setCurrentNOE} />
+      <NumberOfEvents setCurrentNOE={setCurrentNOE} currentNOE={32} />
     );
   });
 
@@ -31,6 +31,6 @@ describe("<NumberOfEvents /> component", () => {
   test("setCurrentNOE is called when the input changes", () => {
     const numberInput = screen.getByRole("spinbutton");
     fireEvent.change(numberInput, { target: { value: "10" } });
-    expect(setCurrentNOE).toHaveBeenCalledWith(10);
+    expect(setCurrentNOE).toHaveBeenCalledWith("10");
   });
 });

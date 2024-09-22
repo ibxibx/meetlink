@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=San+Francisco:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=San+Francisco:wght@300;400;500;600&display=swap");
 
 :root {
   --primary-color: #0071e3;
@@ -16,7 +16,8 @@
 }
 
 body {
-  font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", "Helvetica",
+    "Arial", sans-serif;
   background-color: var(--background-color);
   color: var(--text-color);
   line-height: 1.47059;
@@ -188,7 +189,7 @@ ul {
 }
 
 .details-btn:hover {
-  background-color: #0077ED;
+  background-color: #0077ed;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transform: scale(1.05);
 }
@@ -208,4 +209,12 @@ ul {
   .event {
     padding: 25px;
   }
+}
+
+.alerts-container {
+  position: fixed;
+  top: 0px;
+  left: 20px;
+  width: 250px;
+  z-index: 1000;
 }

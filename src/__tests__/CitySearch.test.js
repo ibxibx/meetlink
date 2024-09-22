@@ -32,19 +32,21 @@ jest.mock("../api", () => ({
 
 describe("<CitySearch /> component", () => {
   test("renders the suggestion text in the textbox upon typing in the input", async () => {
+    const allLocations = extractLocations(mockEvents);
+    const setInfoAlert = jest.fn();
     render(
       <CitySearch
-        allLocations={extractLocations(mockEvents)}
+        allLocations={allLocations}
         setCurrentCity={() => {}}
+        setInfoAlert={setInfoAlert}
       />
     );
 
     const cityTextBox = screen.getByPlaceholderText("Search for a city");
-
     fireEvent.change(cityTextBox, { target: { value: "Berlin" } });
 
     await waitFor(() => {
-      const suggestions = screen.getAllByRole("option");
+      const suggestions = screen.getAllByRole("listitem");
       expect(suggestions.length).toBeGreaterThan(0);
     });
   });
@@ -52,9 +54,13 @@ describe("<CitySearch /> component", () => {
   test("clicking on a suggestion should update the query and hide suggestions", () => {
     const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
     const setCurrentCity = jest.fn();
-
+    const setInfoAlert = jest.fn();
     render(
-      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+      <CitySearch
+        allLocations={allLocations}
+        setCurrentCity={setCurrentCity}
+        setInfoAlert={setInfoAlert}
+      />
     );
 
     const input = screen.getByPlaceholderText("Search for a city");
@@ -66,14 +72,20 @@ describe("<CitySearch /> component", () => {
     expect(input.value).toBe("Berlin, Germany");
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
     expect(setCurrentCity).toHaveBeenCalledWith("Berlin, Germany");
+    expect(setInfoAlert).toHaveBeenCalledWith("");
   });
 
   test("clicking 'See all cities' should update the query and hide suggestions", () => {
     const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
     const setCurrentCity = jest.fn();
+    const setInfoAlert = jest.fn();
 
     render(
-      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+      <CitySearch
+        allLocations={allLocations}
+        setCurrentCity={setCurrentCity}
+        setInfoAlert={setInfoAlert}
+      />
     );
 
     const input = screen.getByPlaceholderText("Search for a city");
@@ -85,13 +97,19 @@ describe("<CitySearch /> component", () => {
     expect(input.value).toBe("See all cities");
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
     expect(setCurrentCity).toHaveBeenCalledWith("See all cities");
+    expect(setInfoAlert).toHaveBeenCalledWith("");
   });
 
   test("selects 'See all cities' when it is clicked", () => {
     const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
     const setCurrentCity = jest.fn();
+    const setInfoAlert = jest.fn();
     render(
-      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+      <CitySearch
+        allLocations={allLocations}
+        setCurrentCity={setCurrentCity}
+        setInfoAlert={setInfoAlert}
+      />
     );
 
     const input = screen.getByPlaceholderText("Search for a city");
@@ -102,13 +120,19 @@ describe("<CitySearch /> component", () => {
 
     expect(setCurrentCity).toHaveBeenCalledWith("See all cities");
     expect(input.value).toBe("See all cities");
+    expect(setInfoAlert).toHaveBeenCalledWith("");
   });
 
   test("selects a city from the suggestions", () => {
     const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
     const setCurrentCity = jest.fn();
+    const setInfoAlert = jest.fn();
     render(
-      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+      <CitySearch
+        allLocations={allLocations}
+        setCurrentCity={setCurrentCity}
+        setInfoAlert={setInfoAlert}
+      />
     );
 
     const input = screen.getByPlaceholderText("Search for a city");
@@ -119,13 +143,19 @@ describe("<CitySearch /> component", () => {
 
     expect(setCurrentCity).toHaveBeenCalledWith("Berlin, Germany");
     expect(input.value).toBe("Berlin, Germany");
+    expect(setInfoAlert).toHaveBeenCalledWith("");
   });
 
   test("shows suggestions when the input is focused", () => {
     const allLocations = ["Berlin, Germany", "Paris, France", "New York, USA"];
     const setCurrentCity = jest.fn();
+    const setInfoAlert = jest.fn();
     render(
-      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
+      <CitySearch
+        allLocations={allLocations}
+        setCurrentCity={setCurrentCity}
+        setInfoAlert={setInfoAlert}
+      />
     );
 
     const input = screen.getByPlaceholderText("Search for a city");
@@ -133,7 +163,9 @@ describe("<CitySearch /> component", () => {
 
     const suggestionList = screen.getByRole("list", { name: "suggestions" });
     expect(suggestionList).toBeInTheDocument();
-    expect(screen.getAllByRole("option")).toHaveLength(allLocations.length + 1); // +1 for "See all cities"
+    expect(screen.getAllByRole("listitem")).toHaveLength(
+      allLocations.length + 1
+    ); // +1 for "See all cities"
   });
 });
 
@@ -146,7 +178,7 @@ describe("<CitySearch /> integration", () => {
     fireEvent.change(cityTextBox, { target: { value: "Berlin" } });
 
     await waitFor(() => {
-      const suggestions = screen.getAllByRole("option");
+      const suggestions = screen.getAllByRole("listitem");
       expect(suggestions.length).toBeGreaterThan(0);
     });
   });
