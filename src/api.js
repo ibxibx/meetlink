@@ -106,6 +106,7 @@ export const getEvents = async () => {
   }
 
   return []; // Return an empty array if we couldn't get events and aren't in development
+};
 
 const removeQuery = () => {
   if (window.history.pushState && window.location.pathname) {
