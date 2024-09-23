@@ -80,10 +80,6 @@ const getToken = async (code) => {
 };
 
 export const getEvents = async () => {
-  if (window.location.href.startsWith("http://localhost")) {
-    return mockData;
-  }
-
   try {
     const token = await getAccessToken();
     if (token) {
@@ -103,8 +99,13 @@ export const getEvents = async () => {
     console.error("Error fetching events:", error);
   }
 
-  return mockData;
-};
+  // If we're in development mode or if there was an error, return mock data
+  if (process.env.NODE_ENV === "development" || !token) {
+    console.log("Using mock data");
+    return mockData;
+  }
+
+  return []; // Return an empty array if we couldn't get events and aren't in development
 
 const removeQuery = () => {
   if (window.history.pushState && window.location.pathname) {
