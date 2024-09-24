@@ -4,56 +4,54 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
     <title>Test Auth Server</title>
   </head>
-
   <body>
-    <style>
-      #container {
-        max-width: 500px;
-      }
-      h4 {
-        margin-top: 25px;
-      }
-    </style>
-
     <main id="container">
       <h1>OAuth2 Test</h1>
-      <h4><b>Step 1:</b> Get OAuth URL</h4>
-      <p>Click the button below to get your OAuth URL.</p>
-      <button id="getAuthUrlButton">Get OAuth URL</button>
+      <h4>Step 1: Get the Auth URL</h4>
+      <p>Click the button below to get your auth url.</p>
+      <button id="getURL">Get OAuth URL</button>
       <p id="result"></p>
-      <a id="authURL" href target="_blank">Click to authorize</a>
+      <a id="authURL" target="_blank">Click to authorize</a>
 
       <h4>Step 2: Get your code and exchange for an access token</h4>
       <p>
-        After you’re redirected back to your Meet app on GitHub, copy the code
+        After you're redirected back to your Meet app on GitHub, copy the code
         from the URI.
       </p>
       <br />
-      <label
-        >Code input
+      <label>
+        Code input
         <input id="code" type="text" value="" />
       </label>
       <button id="getToken">Get Token</button>
       <p id="accessToken"></p>
 
-      <!-- STEP 3 -- MAKE SURE STEP 2 WORKS BEFORE MOVING ON-->
       <h4>Step 3: Get the calendar events using your access token</h4>
       <button id="getEvents">Get Events</button>
       <p id="events"></p>
     </main>
-
-    <script type="text/javascript">
-      const getAuthUrlButton = document.getElementById("getAuthUrlButton");
-      const resultElement = document.getElementById("result");
-      const resultLink = document.getElementById("authURL");
-
+    <script>
+      // Replace with your actual API Gateway stage invoke URL
       const getAuthURL =
         "https://ok2j7dg7a0.execute-api.eu-central-1.amazonaws.com/dev/api/get-auth-url";
+      const getToken =
+        "https://ok2j7dg7a0.execute-api.eu-central-1.amazonaws.com/dev/api/token";
+      const getCalendarEvents =
+        "https://ok2j7dg7a0.execute-api.eu-central-1.amazonaws.com/dev/api/get-events";
 
-      getAuthUrlButton.onclick = function () {
+      const resultElement = document.getElementById("result");
+      const getURLElement = document.getElementById("getURL");
+      const resultLink = document.getElementById("authURL");
+      const codeValue = document.getElementById("code");
+      const getAccessToken = document.getElementById("getToken");
+      const accessTokenElement = document.getElementById("accessToken");
+      const getEvents = document.getElementById("getEvents");
+      const events = document.getElementById("events");
+
+      // Step 1 -- Get Auth URL
+      getURLElement.onclick = function () {
         fetch(getAuthURL)
           .then(function (response) {
             return response.json();
@@ -68,12 +66,7 @@
           });
       };
 
-      const codeValue = document.getElementById("code");
-      const getAccessToken = document.getElementById("getToken");
-      const accessTokenElement = document.getElementById("accessToken");
-      const getToken =
-        "https://ok2j7dg7a0.execute-api.eu-central-1.amazonaws.com/dev/api/token";
-
+      // Step 2 -- Get Access Token
       getAccessToken.onclick = function () {
         let code = codeValue.value;
 
@@ -90,14 +83,8 @@
             accessTokenElement.innerText = JSON.stringify(json);
           });
       };
-      //-------------------END OF STEP 2
 
-      // -- STEP 3
-      const getEvents = document.getElementById("getEvents");
-      const events = document.getElementById("events");
-      const getCalendarEvents =
-        "https://ok2j7dg7a0.execute-api.eu-central-1.amazonaws.com/dev/api/get-events";
-
+      // Step 3 -- Get Calendar Events
       getEvents.onclick = function () {
         const { access_token } = JSON.parse(accessTokenElement.innerText);
         const eventRequest = getCalendarEvents + "/" + access_token;
@@ -109,7 +96,6 @@
             events.innerText = JSON.stringify(json, null, 2);
           });
       };
-      // -- END OF STEP 3
     </script>
   </body>
 </html>

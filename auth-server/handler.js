@@ -1,12 +1,12 @@
-﻿'use strict';
+﻿"use strict";
 
 const { google } = require("googleapis");
 const calendar = google.calendar("v3");
-const SCOPES = ["https://www.googleapis.com/auth/calendar.events.public.readonly"];
-const { CLIENT_SECRET, CLIENT_ID, CALENDAR_ID } = process.env;
-const redirect_uris = [
-  "https://ibxibx.github.io/meetlink/"
+const SCOPES = [
+  "https://www.googleapis.com/auth/calendar.events.public.readonly",
 ];
+const { CLIENT_SECRET, CLIENT_ID, CALENDAR_ID } = process.env;
+const redirect_uris = ["https://ibxibx.github.io/meetlink/"];
 
 const oAuth2Client = new google.auth.OAuth2(
   CLIENT_ID,
@@ -16,10 +16,11 @@ const oAuth2Client = new google.auth.OAuth2(
 
 // CORS headers
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://ibxibx.github.io',
-  'Access-Control-Allow-Credentials': true,
-  'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-  'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+  "Access-Control-Allow-Origin": "https://ibxibx.github.io",
+  "Access-Control-Allow-Credentials": true,
+  "Access-Control-Allow-Headers":
+    "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+  "Access-Control-Allow-Methods": "OPTIONS,GET",
 };
 
 module.exports.getAuthURL = async () => {
@@ -65,7 +66,9 @@ module.exports.getAccessToken = async (event) => {
 };
 
 module.exports.getCalendarEvents = async (event) => {
-  const access_token = decodeURIComponent(`${event.pathParameters.access_token}`);
+  const access_token = decodeURIComponent(
+    `${event.pathParameters.access_token}`
+  );
   oAuth2Client.setCredentials({ access_token });
 
   return new Promise((resolve, reject) => {
