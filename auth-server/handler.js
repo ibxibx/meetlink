@@ -14,28 +14,19 @@ const oAuth2Client = new google.auth.OAuth2(
   redirect_uris[0]
 );
 
-// CORS headers function
-const getCorsHeaders = (origin) => {
-  const allowedOrigins = ["https://ibxibx.github.io", "http://localhost:3000"];
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": allowedOrigins.includes(origin)
-      ? origin
-      : allowedOrigins[0],
-    "Access-Control-Allow-Headers":
-      "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-    "Access-Control-Allow-Methods": "OPTIONS,GET",
-  };
-  return corsHeaders;
+// Simplified CORS headers
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+  "Access-Control-Allow-Methods": "OPTIONS,GET,POST",
 };
 
 module.exports.getAuthURL = async (event) => {
-  const origin = event.headers.origin || event.headers.Origin || "";
-  const headers = getCorsHeaders(origin);
-
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
-      headers,
+      headers: corsHeaders,
       body: JSON.stringify({ message: "CORS preflight request successful" }),
     };
   }
@@ -47,7 +38,7 @@ module.exports.getAuthURL = async (event) => {
 
   return {
     statusCode: 200,
-    headers,
+    headers: corsHeaders,
     body: JSON.stringify({
       authUrl,
     }),
@@ -55,13 +46,10 @@ module.exports.getAuthURL = async (event) => {
 };
 
 module.exports.getAccessToken = async (event) => {
-  const origin = event.headers.origin || event.headers.Origin || "";
-  const headers = getCorsHeaders(origin);
-
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
-      headers,
+      headers: corsHeaders,
       body: JSON.stringify({ message: "CORS preflight request successful" }),
     };
   }
@@ -79,27 +67,24 @@ module.exports.getAccessToken = async (event) => {
     .then((results) => {
       return {
         statusCode: 200,
-        headers,
+        headers: corsHeaders,
         body: JSON.stringify(results),
       };
     })
     .catch((error) => {
       return {
         statusCode: 500,
-        headers,
+        headers: corsHeaders,
         body: JSON.stringify(error),
       };
     });
 };
 
 module.exports.getCalendarEvents = async (event) => {
-  const origin = event.headers.origin || event.headers.Origin || "";
-  const headers = getCorsHeaders(origin);
-
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
-      headers,
+      headers: corsHeaders,
       body: JSON.stringify({ message: "CORS preflight request successful" }),
     };
   }
@@ -130,14 +115,14 @@ module.exports.getCalendarEvents = async (event) => {
     .then((results) => {
       return {
         statusCode: 200,
-        headers,
+        headers: corsHeaders,
         body: JSON.stringify({ events: results.data.items }),
       };
     })
     .catch((error) => {
       return {
         statusCode: 500,
-        headers,
+        headers: corsHeaders,
         body: JSON.stringify(error),
       };
     });

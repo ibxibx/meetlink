@@ -80,6 +80,12 @@ const getToken = async (code) => {
 };
 
 export const getEvents = async () => {
+  // Check for development environment first
+  if (process.env.NODE_ENV === "development") {
+    console.log("Using mock data in development environment");
+    return mockData;
+  }
+
   try {
     const token = await getAccessToken();
     if (token) {
@@ -99,13 +105,9 @@ export const getEvents = async () => {
     console.error("Error fetching events:", error);
   }
 
-  // If we're in development mode or if there was an error, return mock data
-  if (process.env.NODE_ENV === "development" || !token) {
-    console.log("Using mock data");
-    return mockData;
-  }
-
-  return []; // Return an empty array if we couldn't get events and aren't in development
+  // If there was an error and we're not in development, return mock data
+  console.log("Using mock data due to error or missing token");
+  return mockData;
 };
 
 const removeQuery = () => {
