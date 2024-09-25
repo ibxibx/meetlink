@@ -97,12 +97,20 @@ export const getEvents = async () => {
       }
       const result = await response.json();
       if (result && result.events) {
+        // Store the events in localStorage
+        localStorage.setItem("lastEvents", JSON.stringify(result.events));
         return result.events;
       }
       throw new Error("No events data in response");
     }
   } catch (error) {
     console.error("Error fetching events:", error);
+    // If there's an error fetching events, try to load from localStorage
+    const cachedEvents = localStorage.getItem("lastEvents");
+    if (cachedEvents) {
+      console.log("Using cached events from localStorage due to fetch error.");
+      return JSON.parse(cachedEvents);
+    }
   }
 
   // If there was an error and we're not in development, return mock data
