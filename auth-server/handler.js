@@ -14,23 +14,12 @@ const oAuth2Client = new google.auth.OAuth2(
   redirect_uris[0]
 );
 
-// Simplified CORS headers
+// Simplified CORS headers as per mentor's feedback
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-  "Access-Control-Allow-Methods": "OPTIONS,GET,POST",
 };
 
 module.exports.getAuthURL = async (event) => {
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "CORS preflight request successful" }),
-    };
-  }
-
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
@@ -46,14 +35,6 @@ module.exports.getAuthURL = async (event) => {
 };
 
 module.exports.getAccessToken = async (event) => {
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "CORS preflight request successful" }),
-    };
-  }
-
   const code = decodeURIComponent(`${event.pathParameters.code}`);
 
   return new Promise((resolve, reject) => {
@@ -81,14 +62,6 @@ module.exports.getAccessToken = async (event) => {
 };
 
 module.exports.getCalendarEvents = async (event) => {
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify({ message: "CORS preflight request successful" }),
-    };
-  }
-
   const access_token = decodeURIComponent(
     `${event.pathParameters.access_token}`
   );

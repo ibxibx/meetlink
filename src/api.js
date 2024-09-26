@@ -80,6 +80,8 @@ const getToken = async (code) => {
 };
 
 export const getEvents = async () => {
+  console.log("Current NODE_ENV:", process.env.NODE_ENV);
+
   // Check for development environment first
   if (process.env.NODE_ENV === "development") {
     console.log("Using mock data in development environment");
