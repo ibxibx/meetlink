@@ -82,7 +82,6 @@ const getToken = async (code) => {
 export const getEvents = async () => {
   console.log("Current NODE_ENV:", process.env.NODE_ENV);
 
-  // Check for development environment first
   if (process.env.NODE_ENV === "development") {
     console.log("Using mock data in development environment");
     return mockData;
@@ -90,34 +89,42 @@ export const getEvents = async () => {
 
   try {
     const token = await getAccessToken();
+    console.log("Access token obtained:", token ? "Yes" : "No");
+
     if (token) {
       removeQuery();
       const url = `${API_BASE_URL}/get-events/${token}`;
+      console.log("Fetching events from:", url);
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error("Failed to fetch events");
+        const errorText = await response.text();
+        console.error("Error response:", response.status, errorText);
+        throw new Error(
+          `Failed to fetch events: ${response.status} ${response.statusText}`
+        );
       }
       const result = await response.json();
       if (result && result.events) {
-        // Store the events in localStorage
+        console.log("Received events:", result.events.length);
         localStorage.setItem("lastEvents", JSON.stringify(result.events));
         return result.events;
       }
+      console.error("No events data in response:", result);
       throw new Error("No events data in response");
+    } else {
+      console.error("No access token available");
+      throw new Error("No access token available");
     }
   } catch (error) {
     console.error("Error fetching events:", error);
-    // If there's an error fetching events, try to load from localStorage
     const cachedEvents = localStorage.getItem("lastEvents");
     if (cachedEvents) {
       console.log("Using cached events from localStorage due to fetch error.");
       return JSON.parse(cachedEvents);
     }
+    console.log("No cached events available, using mock data as fallback");
+    return mockData;
   }
-
-  // If there was an error and we're not in development, return mock data
-  console.log("Using mock data due to error or missing token");
-  return mockData;
 };
 
 const removeQuery = () => {
