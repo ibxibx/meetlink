@@ -51,16 +51,30 @@ module.exports.getAccessToken = async (event) => {
   const code = decodeURIComponent(`${event.pathParameters.code}`);
   try {
     const { tokens } = await oAuth2Client.getToken(code);
-    return createResponse(200, tokens);
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify(tokens),
+    };
   } catch (error) {
     console.error("Error getting token:", error);
-    return createResponse(500, { error: "Failed to get access token" });
+    return {
+      statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify({ error: "Failed to get access token" }),
+    };
   }
 };
 
 module.exports.getCalendarEvents = async (event) => {
   const access_token = decodeURIComponent(
-    `${event.pathParameters.access_token}`
+      `${event.pathParameters.access_token}`
   );
   oAuth2Client.setCredentials({ access_token });
   try {
@@ -71,9 +85,23 @@ module.exports.getCalendarEvents = async (event) => {
       singleEvents: true,
       orderBy: "startTime",
     });
-    return createResponse(200, { events: results.data.items });
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify({ events: results.data.items }),
+    };
   } catch (error) {
     console.error("Error fetching calendar events:", error);
-    return createResponse(500, { error: "Failed to fetch calendar events" });
+    return {
+      statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify({ error: "Failed to fetch calendar events" }),
+    };
   }
 };
