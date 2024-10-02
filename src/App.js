@@ -6,6 +6,7 @@ import { getEvents, extractLocations } from "./api";
 import { InfoAlert, ErrorAlert, WarningAlert } from "./components/Alert";
 import "./App.css";
 import * as atatus from "atatus-spa";
+import logo from "./img/meetlink_logo.png";
 
 const App = () => {
   const [events, setEvents] = useState([]);
@@ -53,11 +54,7 @@ const App = () => {
   return (
     <div className="App">
       <nav className="nav-bar">
-        <img
-          src="/img/meetlink_logo.png"
-          alt="MeetLink Logo"
-          className="nav-logo"
-        />
+        <img src={logo} alt="MeetLink Logo" className="nav-logo" />
       </nav>
       <div className="alerts-container">
         {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
