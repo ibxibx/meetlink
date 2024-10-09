@@ -15,7 +15,7 @@ const Event = ({ event }) => {
   };
 
   return (
-    <li className="event">
+    <li className="event" role="listitem">
       <h2 className="event-title">{event.summary}</h2>
       <p className="event-start-time">{getEventDate()}</p>
       <p className="event-location">{event.location}</p>
@@ -38,7 +38,11 @@ const Event = ({ event }) => {
         </div>
       )}
 
-      <button className="details-btn" onClick={toggleDetails}>
+      <button
+        className="details-btn"
+        onClick={toggleDetails}
+        data-testid={`show-details-button-${event.id}`}
+      >
         {showDetails ? "hide details" : "show details"}
       </button>
     </li>

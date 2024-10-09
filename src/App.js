@@ -19,28 +19,50 @@ const App = () => {
 
   useEffect(() => {
     atatus.notify(new Error("Test Atatus on Production"));
+    const updateWarningAlert = () => {
+      if (navigator.onLine) {
+        setWarningAlert("");
+      } else {
+        setWarningAlert(
+          "You are currently offline. The event list may not be up to date."
+        );
+      }
+    };
+    window.addEventListener("online", updateWarningAlert);
+    window.addEventListener("offline", updateWarningAlert);
+    updateWarningAlert(); // Initial check
+    return () => {
+      window.removeEventListener("online", updateWarningAlert);
+      window.removeEventListener("offline", updateWarningAlert);
+    };
   }, []);
 
   const fetchData = useCallback(async () => {
-    const allEvents = await getEvents();
-    const filteredEvents =
-      currentCity === "See all cities"
-        ? allEvents
-        : allEvents.filter((event) =>
-            event.location.toUpperCase().includes(currentCity.toUpperCase())
-          );
-    setEvents(filteredEvents ? filteredEvents.slice(0, currentNOE) : []);
-    setAllLocations(extractLocations(allEvents));
+    try {
+      const allEvents = await getEvents();
+      const filteredEvents =
+        currentCity === "See all cities"
+          ? allEvents
+          : allEvents.filter((event) =>
+              event.location.toUpperCase().includes(currentCity.toUpperCase())
+            );
+
+      setEvents(filteredEvents.slice(0, currentNOE));
+      setAllLocations(extractLocations(allEvents));
+
+      if (filteredEvents.length === 0) {
+        setInfoAlert("No events found for the selected city.");
+      } else {
+        setInfoAlert("");
+      }
+    } catch (error) {
+      setErrorAlert("Error fetching events. Please try again later.");
+    }
   }, [currentCity, currentNOE]);
 
   useEffect(() => {
-    if (navigator.onLine) {
-      setWarningAlert("");
-    } else {
-      setWarningAlert("You are offline. The event list may not be up to date.");
-    }
     fetchData();
-  }, [currentCity, currentNOE]);
+  }, [currentCity, currentNOE, fetchData]);
 
   const handleNumberOfEventsChange = (value) => {
     if (isNaN(value) || value <= 0) {
@@ -57,9 +79,9 @@ const App = () => {
         <img src={logo} alt="MeetLink Logo" className="nav-logo" />
       </nav>
       <div className="alerts-container">
-        {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
-        {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
-        {warningAlert.length ? <WarningAlert text={warningAlert} /> : null}
+        {infoAlert && <InfoAlert text={infoAlert} />}
+        {errorAlert && <ErrorAlert text={errorAlert} />}
+        {warningAlert && <WarningAlert text={warningAlert} />}
       </div>
       <CitySearch
         allLocations={allLocations}

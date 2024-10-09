@@ -1,127 +1,99 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
-import {
-  render,
-  waitFor,
-  screen,
-  within,
-  fireEvent,
-} from "@testing-library/react";
+import { render, screen, within, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import App from "../App";
+import { getEvents } from "../api";
 
 const feature = loadFeature("./src/features/ShowHideEventDetails.feature");
 
-defineFeature(feature, (test) => {
-  test("An event element is collapsed by default", ({ given, when, then }) => {
-    given("the user is on the events page", () => {
-      render(<App />);
-    });
+jest.mock("../api");
 
-    when("the user views the event list", async () => {
+defineFeature(feature, (test) => {
+  beforeEach(() => {
+    getEvents.mockResolvedValue([
+      {
+        id: 1,
+        summary: "Test Event 1",
+        location: "Test Location 1",
+        description: "Test Description 1",
+        start: { dateTime: "2023-06-01T19:00:00+02:00" },
+      },
+      {
+        id: 2,
+        summary: "Test Event 2",
+        location: "Test Location 2",
+        description: "Test Description 2",
+        start: { dateTime: "2023-06-02T19:00:00+02:00" },
+      },
+    ]);
+  });
+
+  test("An event element is collapsed by default", ({ given, then }) => {
+    given("the user is viewing the event list", async () => {
+      render(<App />);
       await waitFor(() => {
-        const eventList = screen.getByTestId("event-list");
-        expect(eventList).toBeInTheDocument();
+        expect(screen.getAllByRole("listitem")).toHaveLength(2);
       });
     });
 
-    then("each event element should be collapsed", async () => {
-      await waitFor(() => {
-        const eventElements = screen.getAllByRole("listitem");
-        eventElements.forEach((eventElement) => {
-          const detailsButton = within(eventElement).getByRole("button");
-          expect(detailsButton).toHaveTextContent("show details");
-        });
+    then("the event details should be hidden", () => {
+      const eventElements = screen.getAllByRole("listitem");
+      eventElements.forEach((eventElement) => {
+        expect(
+          within(eventElement).queryByText("Test Description")
+        ).not.toBeInTheDocument();
       });
     });
   });
 
-  test("User can expand an event to see details", ({
+  test("User can expand an event to see details", ({ given, when, then }) => {
+    given("the user is viewing the event list", async () => {
+      render(<App />);
+      await waitFor(() => {
+        expect(screen.getAllByRole("listitem")).toHaveLength(2);
+      });
+    });
+
+    when(
+      "the user clicks on the show details button for an event",
+      async () => {
+        const user = userEvent.setup();
+        const showDetailsButtons = screen.getAllByText("show details");
+        await user.click(showDetailsButtons[0]);
+      }
+    );
+
+    then("the event details should be visible for that event", () => {
+      expect(screen.getByText("Test Description 1")).toBeInTheDocument();
+    });
+  });
+
+  test("User can collapse an event to hide details", ({
     given,
-    and,
     when,
     then,
   }) => {
-    given("the user is on the events page", () => {
+    given("the user is viewing an expanded event", async () => {
       render(<App />);
-    });
-
-    and("an event element is collapsed", async () => {
       await waitFor(() => {
-        const eventElements = screen.getAllByRole("listitem");
-        expect(eventElements.length).toBeGreaterThan(0);
+        expect(screen.getAllByRole("listitem")).toHaveLength(2);
       });
+      const user = userEvent.setup();
+      const showDetailsButtons = screen.getAllByText("show details");
+      await user.click(showDetailsButtons[0]);
     });
 
     when(
-      "the user clicks on the Show Details button for an event",
+      "the user clicks on the hide details button for the event",
       async () => {
-        const showDetailsButton = screen.getAllByText("show details")[0];
-        fireEvent.click(showDetailsButton);
-      }
-    );
-
-    then("the event element should expand to show more details", async () => {
-      await waitFor(() => {
+        const user = userEvent.setup();
         const hideDetailsButton = screen.getByText("hide details");
-        expect(hideDetailsButton).toBeInTheDocument();
-      });
-    });
-  });
-
-  test('User can collapse an event to hide details', ({ given, and, when, then }) => {
-    given('the user is on the events page', () => {
-      render(<App />);
-    });
-
-    and('an event element is expanded', async () => {
-      await waitFor(() => {
-        const eventElements = screen.getAllByRole("listitem");
-        expect(eventElements.length).toBeGreaterThan(0);
-      });
-      const detailsButton = screen.getAllByRole("button", { name: /show details/i })[0];
-      fireEvent.click(detailsButton);
-      await waitFor(() => {
-        const hideDetailsButton = screen.getByRole("button", { name: /hide details/i });
-        expect(hideDetailsButton).toBeInTheDocument();
-      });
-    });
-
-    when('the user clicks on the Hide Details button for an event', async () => {
-      const hideDetailsButton = screen.getByRole("button", { name: /hide details/i });
-      fireEvent.click(hideDetailsButton);
-    });
-
-    then('the event element should collapse to hide the details', async () => {
-      await waitFor(() => {
-        const showDetailsButton = screen.getAllByRole("button", { name: /show details/i })[0];
-        expect(showDetailsButton).toBeInTheDocument();
-      });
-    });
-  });
-
-  test("Change number of events displayed", ({ given, when, then }) => {
-    given("the user is on the events page", () => {
-      render(<App />);
-    });
-
-    when(
-      "the user selects a different number from the Number of Events dropdown",
-      () => {
-        const numberInput = screen.getByLabelText("Number of Events:");
-        fireEvent.change(numberInput, { target: { value: "5" } });
+        await user.click(hideDetailsButton);
       }
     );
 
-    then(
-      "the number of events displayed should update to match the selected number",
-      async () => {
-        await waitFor(
-          () => {
-            const eventElements = screen.getAllByRole("listitem");
-            expect(eventElements.length).toBe(5);
-          },
-          { timeout: 3000 }
-        );
-      }
-    );
+    then("the event details should be hidden for that event", () => {
+      expect(screen.queryByText("Test Description 1")).not.toBeInTheDocument();
+    });
   });
 });

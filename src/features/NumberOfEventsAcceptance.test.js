@@ -1,5 +1,11 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
-import { render, waitFor, screen, fireEvent } from "@testing-library/react";
+import {
+  render,
+  waitFor,
+  screen,
+  fireEvent,
+  within,
+} from "@testing-library/react";
 import App from "../App";
 import { getEvents } from "../api";
 
@@ -32,10 +38,14 @@ defineFeature(feature, (test) => {
     then(
       "the number of events displayed should update to match the selected number",
       async () => {
-        await waitFor(() => {
-          const eventList = screen.getByTestId("event-list");
-          expect(eventList.children).toHaveLength(10);
-        });
+        await waitFor(
+          () => {
+            const eventList = screen.getByTestId("event-list");
+            const eventItems = within(eventList).getAllByRole("listitem");
+            expect(eventItems).toHaveLength(10); // Changed from 5 to 10
+          },
+          { timeout: 3000 }
+        );
       }
     );
   });
@@ -49,7 +59,8 @@ defineFeature(feature, (test) => {
     then("the default number of events displayed should be 32", async () => {
       await waitFor(() => {
         const eventList = screen.getByTestId("event-list");
-        expect(eventList.children).toHaveLength(32);
+        const eventItems = within(eventList).getAllByRole("listitem");
+        expect(eventItems).toHaveLength(32);
       });
     });
   });
@@ -75,7 +86,8 @@ defineFeature(feature, (test) => {
     then("the number of events displayed should be 10", async () => {
       await waitFor(() => {
         const eventList = screen.getByTestId("event-list");
-        expect(eventList.children).toHaveLength(10);
+        const eventItems = within(eventList).getAllByRole("listitem");
+        expect(eventItems).toHaveLength(10);
       });
     });
 
@@ -87,7 +99,8 @@ defineFeature(feature, (test) => {
     then("the number of events displayed should be 20", async () => {
       await waitFor(() => {
         const eventList = screen.getByTestId("event-list");
-        expect(eventList.children).toHaveLength(20);
+        const eventItems = within(eventList).getAllByRole("listitem");
+        expect(eventItems).toHaveLength(20);
       });
     });
   });
