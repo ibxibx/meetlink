@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/meetlink/static/css/main.3fe78860.css",
-    "main.js": "/meetlink/static/js/main.9458b162.js",
+    "main.js": "/meetlink/static/js/main.6174491f.js",
     "static/js/685.85506deb.chunk.js": "/meetlink/static/js/685.85506deb.chunk.js",
     "static/media/meetlink_logo.png": "/meetlink/static/media/meetlink_logo.0c7ac9afc937d05799bf.png",
     "service-worker.js": "/meetlink/service-worker.js",
@@ -9,6 +9,6 @@
   },
   "entrypoints": [
     "static/css/main.3fe78860.css",
-    "static/js/main.9458b162.js"
+    "static/js/main.6174491f.js"
   ]
 }
