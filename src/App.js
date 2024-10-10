@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import CitySearch from "./components/CitySearch";
 import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
+import CityEventsChart from "./components/CityEventsChart";
+import EventGenresChart from "./components/EventGenresChart";
 import { getEvents, extractLocations } from "./api";
 import { InfoAlert, ErrorAlert, WarningAlert } from "./components/Alert";
 import "./App.css";
@@ -19,50 +21,42 @@ const App = () => {
 
   useEffect(() => {
     atatus.notify(new Error("Test Atatus on Production"));
-    const updateWarningAlert = () => {
-      if (navigator.onLine) {
-        setWarningAlert("");
-      } else {
-        setWarningAlert(
-          "You are currently offline. The event list may not be up to date."
-        );
-      }
-    };
-    window.addEventListener("online", updateWarningAlert);
-    window.addEventListener("offline", updateWarningAlert);
-    updateWarningAlert(); // Initial check
-    return () => {
-      window.removeEventListener("online", updateWarningAlert);
-      window.removeEventListener("offline", updateWarningAlert);
-    };
   }, []);
 
   const fetchData = useCallback(async () => {
-    try {
-      const allEvents = await getEvents();
-      const filteredEvents =
-        currentCity === "See all cities"
-          ? allEvents
-          : allEvents.filter((event) =>
-              event.location.toUpperCase().includes(currentCity.toUpperCase())
-            );
-
-      setEvents(filteredEvents.slice(0, currentNOE));
-      setAllLocations(extractLocations(allEvents));
-
-      if (filteredEvents.length === 0) {
-        setInfoAlert("No events found for the selected city.");
-      } else {
-        setInfoAlert("");
-      }
-    } catch (error) {
-      setErrorAlert("Error fetching events. Please try again later.");
-    }
+    const allEvents = await getEvents();
+    const filteredEvents =
+      currentCity === "See all cities"
+        ? allEvents
+        : allEvents.filter((event) =>
+            event.location.toUpperCase().includes(currentCity.toUpperCase())
+          );
+    setEvents(filteredEvents ? filteredEvents.slice(0, currentNOE) : []);
+    setAllLocations(extractLocations(allEvents));
   }, [currentCity, currentNOE]);
 
   useEffect(() => {
+    if (navigator.onLine) {
+      setWarningAlert("");
+    } else {
+      setWarningAlert("You are offline. The event list may not be up to date.");
+    }
     fetchData();
   }, [currentCity, currentNOE, fetchData]);
+
+  useEffect(() => {
+    const handleOnline = () => setWarningAlert("");
+    const handleOffline = () =>
+      setWarningAlert("You are offline. The event list may not be up to date.");
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   const handleNumberOfEventsChange = (value) => {
     if (isNaN(value) || value <= 0) {
@@ -78,21 +72,27 @@ const App = () => {
       <nav className="nav-bar">
         <img src={logo} alt="MeetLink Logo" className="nav-logo" />
       </nav>
-      <div className="alerts-container">
-        {infoAlert && <InfoAlert text={infoAlert} />}
-        {errorAlert && <ErrorAlert text={errorAlert} />}
-        {warningAlert && <WarningAlert text={warningAlert} />}
+      <div className="main-content">
+        <div className="alerts-container">
+          {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
+          {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
+          {warningAlert.length ? <WarningAlert text={warningAlert} /> : null}
+        </div>
+        <CitySearch
+          allLocations={allLocations}
+          setCurrentCity={setCurrentCity}
+          setInfoAlert={setInfoAlert}
+        />
+        <NumberOfEvents
+          setCurrentNOE={handleNumberOfEventsChange}
+          currentNOE={currentNOE}
+        />
+        <div className="charts-container">
+          <EventGenresChart events={events} />
+          <CityEventsChart allLocations={allLocations} events={events} />
+        </div>
+        <EventList events={events} />
       </div>
-      <CitySearch
-        allLocations={allLocations}
-        setCurrentCity={setCurrentCity}
-        setInfoAlert={setInfoAlert}
-      />
-      <NumberOfEvents
-        setCurrentNOE={handleNumberOfEventsChange}
-        currentNOE={currentNOE}
-      />
-      <EventList events={events} />
     </div>
   );
 };
