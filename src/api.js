@@ -1,7 +1,7 @@
 import mockData from "./mock-data";
 
 const API_BASE_URL =
-  "https://z4rcdmh6ub.execute-api.eu-central-1.amazonaws.com/dev/api";
+  "https://e2krb6jpk4.execute-api.us-east-1.amazonaws.com/dev/api";
 
 export const extractLocations = (events) => {
   if (!events) return [];
@@ -57,7 +57,7 @@ const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
   try {
     const response = await fetch(`${API_BASE_URL}/token/${encodeCode}`, {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
