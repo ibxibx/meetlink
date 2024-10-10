@@ -1,7 +1,7 @@
 import mockData from "./mock-data";
 
 const API_BASE_URL =
-  "https://ok2j7dg7a0.execute-api.eu-central-1.amazonaws.com/dev/api";
+  "https://z4rcdmh6ub.execute-api.eu-central-1.amazonaws.com/dev/api";
 
 export const extractLocations = (events) => {
   if (!events) return [];
