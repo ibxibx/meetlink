@@ -56,12 +56,7 @@ export const getAccessToken = async () => {
 const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
   try {
-    const response = await fetch(`${API_BASE_URL}/token/${encodeCode}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(`${API_BASE_URL}/token/${encodeCode}`);
     if (!response.ok) {
       throw new Error(
         `Failed to get token: ${response.status} ${response.statusText}`
