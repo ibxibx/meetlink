@@ -1,4 +1,4 @@
-# 🤝 MeetLink
+# 🤝 MeetLink - The App for Meetups and Events
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen.svg)](https://ibxibx.github.io/meetlink/)
 
